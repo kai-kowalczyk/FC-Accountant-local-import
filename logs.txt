@@ -1,1 +1,6 @@
-Stan konta zmienił się o 3000. Komentarz: x.
+Stan konta zmienił się o -150. Komentarz: wypłata.
+Stan konta zmienił się o 1000. Komentarz: wpłata.
+Zakupiono 3 szt. towaru: parasol. Saldo bieżące: 2805.0 
+Zakupiono 2 szt. towaru: magazyn. Saldo bieżące: 2794.0 
+Sprzedano 10 szt. towaru: mąka. Saldo bieżące: 2841.0 
+Stan konta zmienił się o -300. Komentarz: wypłata. Saldo bieżące: 2541.0

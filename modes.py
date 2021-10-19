@@ -1,18 +1,18 @@
+import pprint
+
 
 def saldo(filename, amount, comment):
-    '''Aktualizuje stan konta i zapisuje akcję w pliku historii operacji'''
+    
     with open(filename) as store:
         acc_balance = store.readline()
         products = store.readlines()
-        acc_balance = float(acc_balance) + float(amount)
-        
+        acc_balance = float(acc_balance) + float(amount)     
     with open(filename, 'w') as store:
         store.write(str(acc_balance) + '\n')
         for product in products:
             store.write(product)
-
     with open('logs.txt', 'a') as logs:
-        logs.write(f'Stan konta zmienił się o {amount}. Komentarz: {comment}.' + '\n')
+        logs.write(f'Stan konta zmienił się o {amount}. Komentarz: {comment}. Saldo bieżące: {acc_balance}' + '\n')
 
 
 def sprzedaz(filename, item_id, price, amount):
@@ -21,7 +21,6 @@ def sprzedaz(filename, item_id, price, amount):
         acc_balance = store.readline()
         products = store.readlines()
         sale = False
-
         for line in products:
             if item_id in line:
                 product_data = line.split(';')
@@ -39,16 +38,14 @@ def sprzedaz(filename, item_id, price, amount):
                     print(f'W magazynie jest za mało towaru! Stan: {product_amount} szt.')
                 break
             else:
-                print('Brak produktu w magazynie!')
-                break
-            
-    if sale:
+                continue
+    if not sale:
+        print('Brak produktu w magazynie!')  
+    else:
         with open(filename, 'w') as store:
             store.write(str(acc_balance) + '\n') 
             for line in products:
-                store.write(line)
-
-    
+                store.write(line)    
         with open('logs.txt', 'a') as logs:
             logs.write(f'Sprzedano {amount} szt. towaru: {item_id}. Saldo bieżące: {acc_balance} '+ '\n')
     
@@ -64,7 +61,6 @@ def zakup(filename, item_id, price, amount):
         purchase = False
         whole_price = float(price) * float(amount)
         item_found = False
-
         for line in products:
             if item_id in line:
                 item_found = True
@@ -84,43 +80,54 @@ def zakup(filename, item_id, price, amount):
                 break
             else:
                 pass
-
         if not item_found :
             if acc_balance >= whole_price:
                     products.append('\n' + f'{item_id};{float(price)};{amount}')
                     acc_balance = float(acc_balance) - (float(amount) * float(price))
                     purchase = True
             else:
-                print(f'Za mało środków na koncie! Saldo bieżące: {acc_balance} zł.')
-                
-            
+                print(f'Za mało środków na koncie! Saldo bieżące: {acc_balance} zł.')        
     if purchase:
         with open(filename, 'w') as store:
             store.write(str(acc_balance) + '\n') 
             for line in products:
                 store.write(line)
-
-    
         with open('logs.txt', 'a') as logs:
             logs.write(f'Zakupiono {amount} szt. towaru: {item_id}. Saldo bieżące: {acc_balance} '+ '\n')
 
 
-
-
-    with open(filename) as magazyn:
-        stock = magazyn.readlines()
-        acc_balance = stock[0]
-        if item_id not in stock:
-            stock.append(f'{item_id};{amount};{price}')
-        else:
-            for line in stock:
-                pass
-
 def konto(filename):
+
     with open(filename) as store:
         acc_balance = float(store.readline())
         print(f'Saldo bieżące: {acc_balance} zł.')
 
 
-def magazyn(filename):
-    pass
+def magazyn(filename, *items):
+
+    with open(filename) as store:
+        acc_balance = store.readline()
+        products = store.readlines()
+        for item in items:
+            item_found = False
+            for line in products:
+                if item in line:
+                    item_found = True 
+                    product_data = line.split(';')
+                    product_id = product_data[0]
+                    product_price = float(product_data[1])
+                    product_amount = int(product_data[2])
+                    print(f'{product_id}:{product_amount}' + '\n')
+                    break
+                else:
+                    continue
+            if not item_found:
+                print(f'Brak produktu: {item} w magazynie.' + '\n')
+
+
+def przeglad(filename):
+
+    with open(filename) as logs:
+        history = logs.readlines()
+        for line in history:
+            print(line)
